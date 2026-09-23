@@ -1,1 +1,24 @@
-# lol
+import math
+
+def round_sig_figs(x, sig_figs):
+    if x == 0:
+        return 0
+    # I don't even wanna know
+    digits = sig_figs - int(math.floor(math.log10(abs(x)))) - 1
+    return round(x, digits)
+
+# Smaller value goes first
+domain_real = [-2, 1]
+range_imaginary = [-1.5, 1.5]
+
+resolution = 100
+accuracy_sig_figs = 6
+
+domain_size = abs(domain_real[1] - domain_real[0])
+range_size = abs(range_imaginary[1] - range_imaginary[0])
+
+increment = range_size / resolution
+
+real_values = [round_sig_figs(domain_real[0] + increment * n, accuracy_sig_figs) for n in range(round(domain_size / increment) + 1)]
+imaginary_values = [round_sig_figs(range_imaginary[0] + increment * n, accuracy_sig_figs) for n in range(round(range_size / increment) + 1)]
+
