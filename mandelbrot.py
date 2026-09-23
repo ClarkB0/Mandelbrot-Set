@@ -1,4 +1,4 @@
-import math, csv
+import math
 from PIL import Image
 
 def round_sig_figs(x, sig_figs):
@@ -9,24 +9,17 @@ def round_sig_figs(x, sig_figs):
     return round(x, digits)
 
 
-# Smaller value goes first
-domain_real = [-2, 1]
-range_imaginary = [-1.5, 1.5]
+def generate_points(domain_real, range_imaginary, resolution, accuracy_sig_figs=6):
+    domain_size = abs(domain_real[1] - domain_real[0])
+    range_size = abs(range_imaginary[1] - range_imaginary[0])
 
-resolution = 1000
-accuracy_sig_figs = 6
+    increment = range_size / resolution
+    x_points = round(domain_size / increment) + 1
+    y_points = round(range_size / increment) + 1
 
-iterations = 1000
-
-domain_size = abs(domain_real[1] - domain_real[0])
-range_size = abs(range_imaginary[1] - range_imaginary[0])
-
-increment = range_size / resolution
-points_x = round(domain_size / increment) + 1
-points_y = round(range_size / increment) + 1
-
-real_values = [round_sig_figs(domain_real[0] + increment * n, accuracy_sig_figs) for n in range(points_x)]
-imaginary_values = [round_sig_figs(range_imaginary[0] + increment * n, accuracy_sig_figs) for n in range(points_y)]
+    real_values = [round_sig_figs(domain_real[0] + increment * n, accuracy_sig_figs) for n in range(x_points)]
+    imaginary_values = [round_sig_figs(range_imaginary[0] + increment * n, accuracy_sig_figs) for n in range(y_points)]
+    return real_values, imaginary_values
 
 
 def rule(z, c):
@@ -41,19 +34,34 @@ def check_bound(z, c, iterations):
     return True
 
 
-bound = []
-for x in range(points_x):
-    for y in range(points_y):
-        c = complex(real_values[x], imaginary_values[y])
-        z = 0
-        if check_bound(z, c, iterations):
-            bound.append([x, y])
+def draw_mandelbrot_set(real_values, imaginary_values, iterations):
+    bound_points = []
+    for x in range(len(real_values)):
+        for y in range(len(imaginary_values)):
+            c = complex(real_values[x], imaginary_values[y])
+            z = 0
+            if check_bound(z, c, iterations):
+                bound_points.append([x, y])
 
-img = Image.new("RGB", (points_x, points_y), "white")
-pixels = img.load()
+    img = Image.new("RGB", (len(real_values), len(imaginary_values)), "white")
+    pixels = img.load()
 
-for point in bound:
-    pixels[point[0], point[1]] = 0
+    for point in bound_points:
+        pixels[point[0], point[1]] = 0
 
-img.save("mandelbrot.png")
-img.show()
+    img.save("mandelbrot.png")
+    img.show()
+
+
+if __name__ == '__main__':
+    # Smaller value goes first
+    domain_real = [-2, 1]
+    range_imaginary = [-1.5, 1.5]
+
+    resolution = 255
+    accuracy_sig_figs = 6
+
+    iterations = 500
+
+    real_values, imaginary_values = generate_points(domain_real, range_imaginary, resolution, accuracy_sig_figs)
+    draw_mandelbrot_set(real_values, imaginary_values, iterations)
