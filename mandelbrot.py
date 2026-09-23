@@ -15,7 +15,7 @@ range_imaginary = [-1.5, 1.5]
 resolution = 200
 accuracy_sig_figs = 6
 
-iterations = 10000
+iterations = 1000
 
 domain_size = abs(domain_real[1] - domain_real[0])
 range_size = abs(range_imaginary[1] - range_imaginary[0])
@@ -39,17 +39,12 @@ def check_bound(z, c, iterations):
 
 
 bound = []
-escaping = []
-
-
 for real_value in real_values:
     for imaginary_value in imaginary_values:
         c = complex(real_value, imaginary_value)
         z = 0
         if check_bound(z, c, iterations):
             bound.append([real_value, imaginary_value])
-        else:
-            escaping.append([real_value, imaginary_value])
 
 with open('output.csv', 'w', newline='') as file:
     writer = csv.writer(file)
