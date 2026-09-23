@@ -1,4 +1,5 @@
 import math, csv
+from PIL import Image
 
 def round_sig_figs(x, sig_figs):
     if x == 0:
@@ -12,7 +13,7 @@ def round_sig_figs(x, sig_figs):
 domain_real = [-2, 1]
 range_imaginary = [-1.5, 1.5]
 
-resolution = 200
+resolution = 1000
 accuracy_sig_figs = 6
 
 iterations = 1000
@@ -21,9 +22,11 @@ domain_size = abs(domain_real[1] - domain_real[0])
 range_size = abs(range_imaginary[1] - range_imaginary[0])
 
 increment = range_size / resolution
+points_x = round(domain_size / increment) + 1
+points_y = round(range_size / increment) + 1
 
-real_values = [round_sig_figs(domain_real[0] + increment * n, accuracy_sig_figs) for n in range(round(domain_size / increment) + 1)]
-imaginary_values = [round_sig_figs(range_imaginary[0] + increment * n, accuracy_sig_figs) for n in range(round(range_size / increment) + 1)]
+real_values = [round_sig_figs(domain_real[0] + increment * n, accuracy_sig_figs) for n in range(points_x)]
+imaginary_values = [round_sig_figs(range_imaginary[0] + increment * n, accuracy_sig_figs) for n in range(points_y)]
 
 
 def rule(z, c):
@@ -39,13 +42,18 @@ def check_bound(z, c, iterations):
 
 
 bound = []
-for real_value in real_values:
-    for imaginary_value in imaginary_values:
-        c = complex(real_value, imaginary_value)
+for x in range(points_x):
+    for y in range(points_y):
+        c = complex(real_values[x], imaginary_values[y])
         z = 0
         if check_bound(z, c, iterations):
-            bound.append([real_value, imaginary_value])
+            bound.append([x, y])
 
-with open('output.csv', 'w', newline='') as file:
-    writer = csv.writer(file)
-    writer.writerows(bound)
+img = Image.new("RGB", (points_x, points_y), "white")
+pixels = img.load()
+
+for point in bound:
+    pixels[point[0], point[1]] = 0
+
+img.save("mandelbrot.png")
+img.show()
