@@ -1,7 +1,7 @@
 import math
 from PIL import Image
 
-def round_sig_figs(x, sig_figs):
+def round_sig_figs(x: float, sig_figs: int):
     if x == 0:
         return 0
     # I don't even wanna know
@@ -9,7 +9,7 @@ def round_sig_figs(x, sig_figs):
     return round(x, digits)
 
 
-def generate_points(domain_real, range_imaginary, resolution, accuracy_sig_figs=6):
+def generate_points(domain_real: list, range_imaginary: list, resolution: int, accuracy_sig_figs: int = 6):
     domain_size = abs(domain_real[1] - domain_real[0])
     range_size = abs(range_imaginary[1] - range_imaginary[0])
 
@@ -22,19 +22,19 @@ def generate_points(domain_real, range_imaginary, resolution, accuracy_sig_figs=
     return real_values, imaginary_values
 
 
-def rule(z, c):
+def rule(z: complex, c:complex):
     return z ** 2 + c
 
 
-def check_bound(z, c, iterations):
+def check_bound(z: complex, c: complex, iterations: int):
     for _ in range(iterations):
         z = rule(z, c)
-        if z.real ** 2 + z.imag ** 2 >= 4:
+        if z.real ** 2 + z.imag ** 2 > 4:
             return False
     return True
 
 
-def draw_mandelbrot_set(real_values, imaginary_values, iterations):
+def draw_mandelbrot_set(real_values: list, imaginary_values: list, iterations: int):
     bound_points = []
     for x in range(len(real_values)):
         for y in range(len(imaginary_values)):
@@ -45,6 +45,7 @@ def draw_mandelbrot_set(real_values, imaginary_values, iterations):
 
     img = Image.new("RGB", (len(real_values), len(imaginary_values)), "white")
     pixels = img.load()
+    assert pixels is not None, "Image creation failed."
 
     for point in bound_points:
         pixels[point[0], point[1]] = 0
@@ -58,10 +59,10 @@ if __name__ == '__main__':
     domain_real = [-2, 1]
     range_imaginary = [-1.5, 1.5]
 
-    resolution = 255
+    resolution = 1000
     accuracy_sig_figs = 6
 
-    iterations = 500
+    iterations = 100
 
     real_values, imaginary_values = generate_points(domain_real, range_imaginary, resolution, accuracy_sig_figs)
     draw_mandelbrot_set(real_values, imaginary_values, iterations)
