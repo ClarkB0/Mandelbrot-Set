@@ -22,11 +22,9 @@ def generate_points(domain_real: list, range_imaginary: list, resolution: int, a
     return real_values, imaginary_values
 
 
-def rule(z: complex, c:complex):
-    return z ** 2 + c
-
-
 def check_bound(z: complex, c: complex, iterations: int):
+    rule = lambda z, c: z ** 2 + c
+
     for _ in range(iterations):
         z = rule(z, c)
         if z.real ** 2 + z.imag ** 2 > 4:
@@ -59,9 +57,14 @@ if __name__ == '__main__':
     domain_real = [-2, 1]
     range_imaginary = [-1.5, 1.5]
 
+    # Number of points (imaginary axis)
+    # From 0 to resolution (inclusive)
+    # The the increment of the real axis is set to the same as the imaginary axis
     resolution = 1000
     accuracy_sig_figs = 6
 
+    # Maximum iterations to check whether the C value results in bound/escaping behaviour
+    # A higher number more accurately represents the Mandelbrot set
     iterations = 100
 
     real_values, imaginary_values = generate_points(domain_real, range_imaginary, resolution, accuracy_sig_figs)
