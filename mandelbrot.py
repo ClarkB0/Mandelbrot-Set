@@ -27,7 +27,7 @@ def check_bound(z: complex, c: complex, iterations: int):
 
     for _ in range(iterations):
         z = rule(z, c)
-        if z.real ** 2 + z.imag ** 2 > 4:
+        if abs(z) > 2:
             return False
     return True
 
