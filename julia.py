@@ -18,7 +18,7 @@ def generate_points(domain_real: list, range_imaginary: list, resolution: int, a
     y_points = round(range_size / increment) + 1
 
     real_values = [round_sig_figs(domain_real[0] + increment * n, accuracy_sig_figs) for n in range(x_points)]
-    imaginary_values = [round_sig_figs(range_imaginary[0] + increment * n, accuracy_sig_figs) for n in range(y_points)]
+    imaginary_values = [round_sig_figs(range_imaginary[1] - increment * n, accuracy_sig_figs) for n in range(y_points)]
     return real_values, imaginary_values
 
 
@@ -32,7 +32,7 @@ def check_bound(z: complex, c: complex, iterations: int):
     return True
 
 
-def draw_mandelbrot_set(real_values: list, imaginary_values: list, c: complex, iterations: int):
+def draw_julia_set(real_values: list, imaginary_values: list, c: complex, iterations: int):
     bound_points = []
     for x in range(len(real_values)):
         for y in range(len(imaginary_values)):
@@ -53,9 +53,9 @@ def draw_mandelbrot_set(real_values: list, imaginary_values: list, c: complex, i
 
 if __name__ == '__main__':
     # Smaller value goes first
-    domain_real = [-1, 1]
+    domain_real = [-1.5, 1.5]
     range_imaginary = [-1, 1]
-    c = -0.5125 + 0.5213j
+    c = -0.2 + 0.2701j
 
     # Number of points (imaginary axis)
     # From 0 to resolution (inclusive)
@@ -64,8 +64,8 @@ if __name__ == '__main__':
     accuracy_sig_figs = 6
 
     # Maximum iterations to check whether the C value results in bound/escaping behaviour
-    # A higher number more accurately represents the Mandelbrot set
+    # A higher number more accurately represents the  set
     iterations = 100
 
     real_values, imaginary_values = generate_points(domain_real, range_imaginary, resolution, accuracy_sig_figs)
-    draw_mandelbrot_set(real_values, imaginary_values, c, iterations)
+    draw_julia_set(real_values, imaginary_values, c, iterations)
